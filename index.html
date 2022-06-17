@@ -1,0 +1,92 @@
+<html>
+
+<head>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css"
+    integrity="sha512-07I2e+7D8p6he1SIM+1twR5TIrhUQn9+I6yjqD53JQjFiMf8EtC93ty0/5vJTZGF8aAocvHYNEDJajGdNx1IsQ=="
+    crossorigin="" />
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="input">
+      <div class="formulario">
+
+        <input type="text" name="q" id="q" placeholder="Digite seu endereço">
+
+        <button class="btn" onclick="pesquisarEndereco()" type="submit">Enviar</button>
+
+      </div>
+    </div>
+
+
+    <div id="location-map" style="display: none"></div>
+
+
+  </div>
+  <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"
+    integrity="sha512-A7vV8IFfih/D732iSSKi20u/ooOfj/AGehOKq0f4vLT1Zr2Y+RX7C+w8A1gaSasGtRUZpF/NZgzSAu4/Gc41Lg=="
+    crossorigin=""></script>
+
+  <script type="text/javascript">
+
+    function pesquisarEndereco() {
+      var endereco = document.querySelector('#q').value;
+      var url = "https://nominatim.openstreetmap.org/search?q=" + endereco + "&format=jsonv2";
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("GET", url, false);
+      xmlHttp.send(null);
+      var data = xmlHttp.responseText;
+      var endereco = JSON.parse(data);
+
+      var lat = endereco[0].lat;
+      var lon = endereco[0].lon;
+
+      if (lat[0] == '-' && lon[0] == '-') {
+        var map = L.map('location-map').setView([lat, lon], 17);
+        mapLink = '<a href="https://openstreetmap.org">OpenStreetMap</a>';
+        L.tileLayer(
+          'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: 'Map data &copy; ' + mapLink,
+          maxZoom: 20,
+        }).addTo(map);
+        var marker = L.marker([lat, lon]).addTo(map);
+        if (marker) {
+          var m = document.getElementById('location-map');
+
+          m.style.display = 'block';
+        }
+      } else {
+        alert('Digite um endereço valido')
+      }
+
+    }
+
+    // var endereco = document.querySelector('#q').value;
+
+    // var url = "https://nominatim.openstreetmap.org/search?q=" + endereco + "&format=jsonv2";
+    // var xmlHttp = new XMLHttpRequest();
+    // xmlHttp.open("GET", url, false);
+    // xmlHttp.send(null);
+    // var endereco = xmlHttp.responseText;
+    // // var endereco = JSON.parse(data)
+
+    // //var map = L.map('location-map').setView([-8.77615, -63.89814], 17);
+    // var lat = -8.77615;
+    // var lon = -63.89814;
+
+    // var map = L.map('location-map').setView([lat, lon], 17);
+    // mapLink = '<a href="https://openstreetmap.org">OpenStreetMap</a>';
+    // L.tileLayer(
+    //   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //   attribution: 'Map data &copy; ' + mapLink,
+    //   maxZoom: 20,
+    // }).addTo(map);
+    // var marker = L.marker([lat, lon]).addTo(map);
+
+  </script>
+</body>
+
+</html>
